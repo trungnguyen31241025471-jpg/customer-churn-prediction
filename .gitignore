@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Bo qua thu muc du lieu
+data/
+*.csv
+*.xlsx
