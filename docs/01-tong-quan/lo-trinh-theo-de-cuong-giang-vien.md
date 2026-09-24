@@ -8,13 +8,13 @@
 
 ## Bước 1 — Xác định bài toán nghiên cứu
 
-**Customer Churn là gì**: hiện tượng khách hàng chấm dứt quan hệ giao dịch với doanh nghiệp — xem định nghĩa đầy đủ tại [Wikipedia — Churn rate](https://en.wikipedia.org/wiki/Churn_rate).
+**Customer Churn là gì**: hiện tượng khách hàng chấm dứt quan hệ giao dịch với doanh nghiệp - xem định nghĩa đầy đủ tại [Wikipedia — Churn rate](https://en.wikipedia.org/wiki/Churn_rate).
 
-**Tại sao quan trọng trong e-commerce**: theo nghiên cứu được trích dẫn trên Harvard Business Review, chi phí thu hút một khách hàng mới có thể **cao gấp 5-25 lần** so với chi phí giữ chân một khách hàng hiện có — xem [HBR — The Value of Keeping the Right Customers](https://hbr.org/2014/10/the-value-of-keeping-the-right-customers). Đây chính là lý do dự đoán churn sớm mang lại giá trị kinh doanh trực tiếp, không chỉ là bài toán kỹ thuật.
+**Tại sao quan trọng trong e-commerce**: theo nghiên cứu được trích dẫn trên Harvard Business Review, chi phí thu hút một khách hàng mới có thể **cao gấp 5-25 lần** so với chi phí giữ chân một khách hàng hiện có - xem [HBR - The Value of Keeping the Right Customers](https://hbr.org/2014/10/the-value-of-keeping-the-right-customers). Đây chính là lý do dự đoán churn sớm mang lại giá trị kinh doanh trực tiếp, không chỉ là bài toán kỹ thuật.
 
-**Biến mục tiêu**: `Churn = 1` (khách rời bỏ) / `Churn = 0` (khách còn hoạt động) — xem cách gán nhãn cụ thể ở Bước 2.
+**Biến mục tiêu**: `Churn = 1` (khách rời bỏ) / `Churn = 0` (khách còn hoạt động) - xem cách gán nhãn cụ thể ở Bước 2.
 
-**Research Questions (RQ)** — ✅ **đã phân tích chi tiết kèm minh chứng từ literature** tại `nghien-cuu-gap-va-research-questions.md` (đọc full-text 2 bài quan trọng nhất, không chỉ abstract). Tóm tắt 3 RQ chính thức:
+**Research Questions (RQ)** - ✅ **đã phân tích chi tiết kèm minh chứng từ literature** tại `nghien-cuu-gap-va-research-questions.md` (đọc full-text 2 bài quan trọng nhất, không chỉ abstract). Tóm tắt 3 RQ chính thức:
 
 |RQ|Câu hỏi|Trả lời bằng công cụ nào trong đề tài|
 |-|-|-|
@@ -28,9 +28,9 @@ Xem `nghien-cuu-gap-va-research-questions.md` để đọc đầy đủ bảng p
 
 ## Bước 2 — Thu thập dữ liệu
 
-* Tải **UCI Online Retail II** — chi tiết đầy đủ về nguồn, schema, đặc điểm nghiệp vụ đã có tại `../03-du-lieu/mo-ta-du-lieu-online-retail-ii.md`.
+* Tải **UCI Online Retail II** - chi tiết đầy đủ về nguồn, schema, đặc điểm nghiệp vụ đã có tại `../03-du-lieu/mo-ta-du-lieu-online-retail-ii.md`.
 * **Chuyển từ dữ liệu giao dịch sang dữ liệu customer-level**: mỗi dòng gốc là một dòng hóa đơn (invoice line item); cần `groupby('Customer ID')` để tổng hợp thành một dòng/khách hàng — kỹ thuật này đã thực hành ở `../05-thuc-hanh/eda-va-tien-xu-ly-du-lieu.ipynb`.
-* **Xác định khoảng thời gian quan sát và quy tắc churn**: dùng kỹ thuật **observation window + prediction window** — quan sát hành vi trước một mốc `cutoff date`, gán nhãn churn dựa trên việc khách có mua trong N tháng sau đó hay không. Khái niệm **censoring** (không đủ dữ liệu tương lai để xác định nhãn) vay mượn từ Survival Analysis — xem [GeeksforGeeks — Kaplan-Meier Estimator](https://www.geeksforgeeks.org/data-science/kaplan-meier-estimator-survival-analysis/). Đã thực hành đầy đủ (nhiều mốc cutoff, có kiểm tra censoring) ở `../05-thuc-hanh/nang-cao-sensitivity-feature-nested-cv.ipynb` (Phần 1).
+* **Xác định khoảng thời gian quan sát và quy tắc churn**: dùng kỹ thuật **observation window + prediction window** — quan sát hành vi trước một mốc `cutoff date`, gán nhãn churn dựa trên việc khách có mua trong N tháng sau đó hay không. Khái niệm **censoring** (không đủ dữ liệu tương lai để xác định nhãn) vay mượn từ Survival Analysis - xem [GeeksforGeeks — Kaplan-Meier Estimator](https://www.geeksforgeeks.org/data-science/kaplan-meier-estimator-survival-analysis/). Đã thực hành đầy đủ (nhiều mốc cutoff, có kiểm tra censoring) ở `../05-thuc-hanh/nang-cao-sensitivity-feature-nested-cv.ipynb` (Phần 1).
 
 \---
 
