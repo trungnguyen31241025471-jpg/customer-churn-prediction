@@ -1,10 +1,9 @@
 # Tổ Chức Nhóm Trên GitHub — Hướng Dẫn Từng Bước
 
-Hướng dẫn này giả định nhóm 3 người (A: Data & Feature Engineering, B: Modeling & Explainability, C: Literature Review & Viết bài — xem `../01-tong-quan/tong-quan-de-tai.md`) đã cài Git theo Bước 5 của `huong-dan-cai-dat-cong-cu.md`. Làm theo đúng thứ tự dưới đây.
 
 ## Bước 1 — Quyết định ai là chủ repository
 
-Chọn 1 người (thường là trưởng nhóm hoặc người phụ trách viết bài — gợi ý: Người C) đứng tên tạo repository chính. Hai người còn lại sẽ được thêm làm **collaborator**, không cần mỗi người tạo một bản riêng.
+Chọn 1 người (thường là trưởng nhóm hoặc người phụ trách viết bài) đứng tên tạo repository chính. Hai người còn lại sẽ được thêm làm **collaborator**, không cần mỗi người tạo một bản riêng.
 
 Nếu nhóm muốn chuyên nghiệp hơn (và miễn phí): tạo một **GitHub Organization** (Settings → "Your organizations" → New organization) đứng tên chung, ví dụ `churn-prediction-team`, rồi tạo repo bên trong tổ chức đó thay vì tài khoản cá nhân. Cách này giúp không phụ thuộc vào một cá nhân nếu sau này đổi trưởng nhóm.
 
