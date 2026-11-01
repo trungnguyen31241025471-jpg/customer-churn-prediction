@@ -217,7 +217,18 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Bo qua thu muc du lieu
-data/
+   # Bo qua du lieu va file trung gian
+   data/*
+   !data/README.md
+   *.csv
+   *.csv.gz
+   *.pkl
+   !docs/06-tai-lieu-tham-khao/*.xlsx
+
+# Bo qua du lieu va file trung gian
+data/*
+!data/README.md
 *.csv
-*.xlsx
+*.csv.gz
+*.pkl
+!docs/06-tai-lieu-tham-khao/*.xlsx
