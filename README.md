@@ -1,56 +1,82 @@
-# 🛒 Customer Churn Prediction: Ứng dụng Machine Learning trong Bán lẻ
+# Dự đoán rời bỏ khách hàng thương mại điện tử bằng học máy có thể giải thích
 
-## 📌 Tổng quan dự án (Project Overview)
-Dự án này ứng dụng các thuật toán Học máy (Machine Learning) để dự đoán xác suất rời bỏ (Churn) của khách hàng dựa trên lịch sử giao dịch. Khác với các bài toán phân loại thông thường, dự án tập trung vào phân tích chuỗi thời gian của hành vi mua sắm, từ đó cung cấp các **Insight có thể hành động (Actionable Insights)** giúp bộ phận kinh doanh tối ưu hóa chi phí giữ chân khách hàng (Customer Retention Cost).
+Đề tài nghiên cứu khoa học sinh viên (Nhóm 3): xây dựng khung dự đoán churn có thể giải thích cho thương mại điện tử phi hợp đồng, trên bộ dữ liệu **UCI Online Retail II**, từ giao dịch thô đến khung hỗ trợ quyết định kinh doanh.
 
-## 🎯 Mục tiêu Nghiệp vụ (Business Objectives)
-* **Nhận diện rủi ro:** Phát hiện sớm các khách hàng có dấu hiệu giảm dần tương tác hoặc thay đổi tính chu kỳ mua sắm.
-* **Tối ưu ngân sách:** Cung cấp điểm xác suất (Probability Score) để phòng Marketing phân bổ chính xác ngân sách khuyến mãi, tránh tặng voucher lãng phí cho khách hàng không có nguy cơ rời đi.
-* **Phân tích hành vi:** Giải thích nguyên nhân rời bỏ thông qua phân rã các đặc trưng nâng cao (Explainable AI).
+## Điểm khác biệt của nghiên cứu
 
-## 🗂️ Cấu trúc Kho lưu trữ (Repository Structure)
+- **Tự định nghĩa nhãn churn** từ giao dịch thô bằng cửa sổ quan sát/dự đoán 90 ngày, có kiểm tra right-censoring (không dùng nhãn gán sẵn).
+- **Walk-Forward Validation 8 fold** (mốc Test hằng tháng từ 01/02/2011 đến 01/09/2011), thay cho chia ngẫu nhiên; so sánh mô hình bằng kiểm định Wilcoxon signed-rank.
+- **SHAP ba mức** (toàn cục, tương tác, cục bộ), rồi chuyển thành bảng quyết định cấp từng khách hàng: Khách hàng → Xác suất churn → Driver chính → Hành động giữ chân.
+
+## Dữ liệu
+
+| Mục | Giá trị |
+|---|---|
+| Nguồn | UCI Online Retail II (01/12/2009 – 09/12/2011) |
+| Dữ liệu thô | 1.067.371 dòng × 8 cột |
+| Sau làm sạch | 776.854 dòng, 5.853 khách hàng, 41 quốc gia |
+
+Dữ liệu **không** nằm trong repo. Xem hướng dẫn tải tại [`data/README.md`](data/README.md).
+
+## Kết quả chính
+
+Đánh giá trên 8 fold walk-forward (trung bình ± độ lệch chuẩn):
+
+| Mô hình | ROC-AUC | PR-AUC |
+|---|---|---|
+| **Random Forest** | **0,797 ± 0,014** | **0,853 ± 0,019** |
+| Logistic Regression | 0,790 ± 0,010 | 0,849 ± 0,017 |
+| LightGBM | 0,769 ± 0,019 | 0,830 ± 0,028 |
+| XGBoost | 0,766 ± 0,021 | 0,827 ± 0,027 |
+| Baseline (chỉ Recency) | 0,756 ± 0,021 | — |
+
+- Random Forest vượt cả bốn đối thủ có ý nghĩa thống kê (Wilcoxon, p < 0,05).
+- Mã hóa địa lý one-hot 8 quốc gia chỉ cải thiện có ý nghĩa trên Logistic Regression (p = 0,016), không trên các mô hình dạng cây.
+- Năm đặc trưng dẫn đầu theo SHAP: `ActiveMonths`, `Frequency`, `Monetary`, `Recency`, `RepeatPurchaseRatio`.
+- Tại mốc 01/06/2011, khung hỗ trợ quyết định phân loại 4.909 khách hàng: 3.862 (78,7%) rủi ro cao, chia thành 10 nhãn kinh doanh.
+- Hạn chế chính: `churn_prob` là điểm xếp hạng rủi ro, chưa phải xác suất đã hiệu chỉnh (do dùng `class_weight='balanced'`).
+
+## Cấu trúc thư mục
+
 ```text
 customer-churn-prediction/
-├── data/               # Thư mục chứa dữ liệu thô (đã ẩn qua .gitignore để bảo mật)
-├── docs/               # Các biểu đồ phân tích EDA, ma trận tương quan và báo cáo giải thích
-├── notebooks/          # File Jupyter Notebook (01_eda_and_cleaning.ipynb) dùng để trực quan hóa
-├── src/                # Mã nguồn Python xử lý tính năng RFM và huấn luyện mô hình
-├── .gitignore          # Cấu hình bỏ qua các file rác và dữ liệu nhạy cảm
-└── README.md           # Tài liệu tổng quan dự án
+├── data/                # dữ liệu thô (bị .gitignore) + hướng dẫn tải
+├── notebooks/           # notebook đánh số theo thứ tự chạy
+│   └── archive/         # bản cũ, thử nghiệm
+├── src/                 # script Python
+├── docs/
+│   ├── figures/eda/     # biểu đồ EDA
+│   ├── 01-tong-quan/    # tổng quan đề tài, research gap, lộ trình
+│   ├── 02-ly-thuyet/    # nền tảng kiến thức
+│   ├── 04-cong-cu/      # hướng dẫn công cụ và GitHub
+│   ├── 06-tai-lieu-tham-khao/   # literature review
+│   └── 07-bao-cao-gui-thay/     # báo cáo tiến độ
+├── requirements.txt
+└── README.md
 ```
 
-## 🧠 Phương pháp tiếp cận (Methodology)
-1. **Tiền xử lý (Data Cleaning):** Làm sạch dòng tiền, loại bỏ các hóa đơn hủy và các mã dịch vụ phi sản phẩm (POST, BANK CHARGES) để bảo toàn tính nguyên bản của vòng đời khách hàng.
-2. **Feature Engineering:**
-   * Trích xuất mô hình **RFM** (Recency, Frequency, Monetary).
-   * Lượng hóa "sự thất thường" thông qua **Độ lệch chuẩn khoảng cách mua (IntervalStd)**.
-   * Tính toán **Gia tốc chi tiêu (Spending Trends)** so sánh 3 tháng gần nhất với 3 tháng trước đó.
-3. **Time-based Walk-Forward Validation:** Sử dụng kỹ thuật cuộn mốc thời gian để huấn luyện và kiểm thử, ngăn chặn tuyệt đối hiện tượng rò rỉ dữ liệu (Data Leakage) thường gặp trong bài toán chuỗi sự kiện.
+## Cách chạy
 
-## 🛠️ Công nghệ & Thư viện (Tech Stack)
-* **Ngôn ngữ:** Python 3.10
-* **Xử lý dữ liệu:** `pandas`, `numpy`
-* **Trực quan hóa:** `matplotlib`, `seaborn`
-* **Mô hình Máy học:** `scikit-learn` (Logistic Regression, Random Forest), `xgboost`, `lightgbm`
-* **Đánh giá thống kê:** `scipy` (Kiểm định Wilcoxon)
-
-## 📊 Kết quả nổi bật (Key Results)
-* Giải quyết thành công bài toán **Mất cân bằng dữ liệu (Imbalanced Data)** bằng cách sử dụng thang đo PR-AUC (Precision-Recall Area Under Curve) thay vì Accuracy.
-* Mô hình Tree-based (Random Forest / LightGBM) vượt trội trong việc nắm bắt các quy tắc phi tuyến tính của khách lẻ B2C và khách sỉ B2B.
-* Khẳng định tính hiệu quả của các biến xu hướng (Trend) bằng phương pháp Ablation Study với mức ý nghĩa thống kê p-value < 0.05.
-
-## 🚀 Hướng dẫn cài đặt (How to Run)
-1. Clone dự án về máy:
+1. Clone repo và cài thư viện:
    ```bash
-   git clone https://github.com/your-username/customer-churn-prediction.git
+   git clone https://github.com/trungnguyen31241025471-jpg/customer-churn-prediction.git
    cd customer-churn-prediction
+   pip install -r requirements.txt
    ```
-2. Cài đặt các thư viện yêu cầu:
-   ```bash
-   pip install pandas numpy scikit-learn xgboost lightgbm matplotlib seaborn scipy
-   ```
-3. Đặt file dữ liệu `online_retail_II.csv` vào thư mục `data/` và chạy file notebook trong thư mục `notebooks/`.
+2. Tải dữ liệu và đặt vào `data/` theo [`data/README.md`](data/README.md).
+3. Chạy các notebook trong `notebooks/` theo thứ tự:
 
----
-*Dự án được thực hiện nhằm mục đích nghiên cứu ứng dụng Khoa học dữ liệu vào Phân tích Nghiệp vụ.*
+| Notebook | Nội dung |
+|---|---|
+| `01_eda_tien_xu_ly.ipynb` | Khám phá và làm sạch dữ liệu |
+| `02_pipeline_bo_A.ipynb` | Pipeline walk-forward với bộ đặc trưng A |
+| `03_pipeline_bo_B_walkforward.ipynb` | Pipeline walk-forward với bộ 14 đặc trưng chính (Bộ B) |
+| `04_shap_ho_tro_quyet_dinh.ipynb` | Giải thích SHAP và khung hỗ trợ quyết định |
 
+## Công nghệ
+
+Python 3.10; pandas, numpy; scikit-learn, xgboost, lightgbm; shap; scipy, statsmodels; matplotlib, seaborn.
+
+## Hướng phát triển
+
+Hiệu chỉnh xác suất (calibration); counterfactual explanation; thử nghiệm uplift modeling nếu có dữ liệu can thiệp; kiểm chứng trên ít nhất một bộ dữ liệu e-commerce khác.
